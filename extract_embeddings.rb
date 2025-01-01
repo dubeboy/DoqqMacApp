@@ -26,31 +26,49 @@ def extract_functions(ast_node)
   functions
 end
 
+# Correct offsets dynamically
+def adjust_offset(source_code, target_offset, target_length)
+  current_offset = 0
+  current_index = 0
+
+  # Traverse the source code character-by-character
+  source_code.each_char.with_index do |char, index|
+    # Skip characters that don't count toward the offset (e.g., UTF-8 handling)
+    current_offset += char.bytesize
+    current_index = index
+    break if current_offset >= target_offset
+  end
+
+  # Extract the source text
+  adjusted_text = source_code[current_index, target_length]
+  adjusted_text
+end
+
 # Extract functions from the top-level AST
 functions = extract_functions(ast)
 
-# Print function details and source code
-functions.each do |func|
-  # Determine the kind of function
-  kind = case func["key.kind"]
-         when "source.lang.swift.decl.function.free" then "Free Function"
-         when "source.lang.swift.decl.function.method.instance" then "Instance Method"
-         when "source.lang.swift.decl.function.method.static" then "Static Method"
-         else "Unknown"
-         end
-
-  # Extract source code using offset and length
+# Collect function chunks and additional metadata
+function_chunks = functions.map do |func|
   offset = func["key.offset"]
   length = func["key.length"]
 
-  if offset && length
-    source = source_code[offset, length]
-    puts "Function: #{func['key.name']}"
-    puts "Kind: #{kind}"
-    puts "Source: #{source}"
-    puts "---"
-  else
-    puts "Function: #{func['key.name']} (Kind: #{kind}) has invalid offset or length."
-    puts "---"
-  end
+  # Adjust the offset and extract source text
+  source_text = offset && length ? adjust_offset(source_code, offset, length) : nil
+
+  {
+    name: func["key.name"],
+    kind: case func["key.kind"]
+          when "source.lang.swift.decl.function.free" then "Free Function"
+          when "source.lang.swift.decl.function.method.instance" then "Instance Method"
+          when "source.lang.swift.decl.function.method.static" then "Static Method"
+          else "Unknown"
+          end,
+    offset: offset,
+    length: length,
+    sourcetext: source_text
+  }
 end
+
+# Write the function chunks to a JSON file
+File.write("function_chunks.json", JSON.pretty_generate(function_chunks))
+puts "Function chunks have been written to 'function_chunks.json'"
