@@ -11,7 +11,7 @@ import SwiftUI
 struct DoqqMacAppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ConversationsView()
         }
     }
 }

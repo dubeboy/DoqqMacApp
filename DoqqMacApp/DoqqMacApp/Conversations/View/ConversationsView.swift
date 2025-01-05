@@ -8,16 +8,27 @@
 import SwiftUI
 
 struct ConversationsView: View {
+    @State var viewModel = ConversationViewModel()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationView {
+            sideBar
+            Text("Chat View")
         }
-        .padding()
+    }
+    
+    var sideBar: some View {
+        List(viewModel.sessions, selection: $viewModel.selectedSession) { session in
+            Button {
+                viewModel.selectSession(session: session.id)
+            } label: {
+                Text(session.name)
+                    .padding()
+            }
+        }
     }
 }
+
 
 #Preview {
     ConversationsView()
