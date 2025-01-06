@@ -21,6 +21,13 @@ class ConversationViewModel {
         conversationManager.sessions
     }
     
+    var selectedSessionMessages: [Message] {
+        guard conversationManager.sessions.count > 0  else {
+            return []
+        }
+        return conversationManager.sessions[selectedSession].chatHistory
+    }
+    
     func loadSessions() async {
         do {
             let sessions = try await conversationManager.loadSessions()
@@ -30,10 +37,10 @@ class ConversationViewModel {
         }
     }
     
-    func askDoqq(session id: Int, message: String) async {
+    func askDoqq(message: String) async {
         do {
             state = .askingLLM
-            let _ = try await conversationManager.askDoqq(session: id, message: Message(role: "user", content: message))
+            let _ = try await conversationManager.askDoqq(session: selectedSession, message: Message(role: "user", content: message, isQuery: true))
             state = .successAskingLLM
         } catch {
             state = .errorAskingLLM
@@ -43,4 +50,5 @@ class ConversationViewModel {
     func selectSession(session id: Int) {
         selectedSession = id
     }
+    
 }

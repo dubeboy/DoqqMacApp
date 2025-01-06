@@ -10,7 +10,7 @@ class ConversationManager {
     private let conversationService = ConversationService()
     
     func askDoqq(session id: Int, message: Message) async throws -> OllamaResponse {
-        if sessions.count >= id { // even if it fails to send eg network issue, that is fine as it will not be persisted to DB
+        if sessions.count <= id { // even if it fails to send eg network issue, that is fine as it will not be persisted to DB
             sessions.append(ConversationSessionModel(id: id, name: "New Chat \(id)", chatHistory: [message]))
         } else {
             sessions[id].chatHistory.append(message)

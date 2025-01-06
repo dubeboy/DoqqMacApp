@@ -13,7 +13,10 @@ struct OllamaPayload: Codable {
     let stream: Bool
 }
 
-struct Message: Codable {
+struct Message: Codable, Identifiable {
+    var id: String = UUID().uuidString
+    
     let role: String
     let content: String
+    var isQuery: Bool = false
 }

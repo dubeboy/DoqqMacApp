@@ -26,6 +26,7 @@ struct RichResponseTextView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("File: \(fileName)")
                                 .font(.headline)
+                                .padding()
                             Button(action: {
                                 openFileManager(at: filePath)
                             }) {
@@ -37,9 +38,8 @@ struct RichResponseTextView: View {
                         }
                         .padding(.vertical, 4)
                     case .code(let content):
-//                        CodeView(code: content)
-//                            .padding(.vertical, 4)
-                        Text("")
+                        CodeView(codeSnippet: content)
+                            .padding(.vertical, 4)
                     }
                 }
             }
