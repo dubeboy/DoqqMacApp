@@ -29,9 +29,22 @@
 		6B97ED562D2B0C4300AED7BE /* DoqqMacAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DoqqMacAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		6B97EDBF2D2B711B00AED7BE /* Exceptions for "DoqqMacApp" folder in "DoqqMacApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 6B97ED3A2D2B0C4100AED7BE /* DoqqMacApp */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		6B97ED3D2D2B0C4100AED7BE /* DoqqMacApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6B97EDBF2D2B711B00AED7BE /* Exceptions for "DoqqMacApp" folder in "DoqqMacApp" target */,
+			);
 			path = DoqqMacApp;
 			sourceTree = "<group>";
 		};
@@ -401,6 +414,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"DoqqMacApp/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DoqqMacApp/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -426,6 +441,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"DoqqMacApp/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DoqqMacApp/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

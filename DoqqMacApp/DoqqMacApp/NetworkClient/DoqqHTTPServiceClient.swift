@@ -13,12 +13,13 @@ final class DoqqHTTPServiceClient {
     private init() {}
     
     static let shared = DoqqHTTPServiceClient() // this can be a singleton because URL session is one but does not make much diff to me either way or you can make it a struct
-
+    
     /// Model and URL agnostic, mainly serializes and desirilizes or requests and responses
     func makeRequest<T: Decodable>(_ endpoint: EndpointProtocol, for response: T.Type) async throws -> T {
         let request = createURLRequestObject(for: endpoint)
         let (data, _) = try await URLSession.shared.data(for: request)
         let decoder = JSONDecoder()
+        print(String(data: data, encoding: .utf8))
         return try decoder.decode(response.self, from: data)
     }
 }
@@ -32,6 +33,18 @@ extension DoqqHTTPServiceClient {
         }
         var request = URLRequest(url: url)
         request.httpMethod = endpoint.method.rawValue
+        
+        // Serialize the request body if present
+        if let body = endpoint.body {
+            do {
+                let jsonData = try JSONEncoder().encode(body)
+                request.httpBody = jsonData
+                request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            } catch {
+                fatalError("Failed to encode request body: \(error)")
+            }
+        }
+        
         return request
     }
 }

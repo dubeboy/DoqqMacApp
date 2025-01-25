@@ -12,7 +12,6 @@ struct RichResponseTextView: View {
     let response: String
 
     var body: some View {
-        ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 // Split the response into lines to parse
                 ForEach(parseResponse(response), id: \.self) { element in
@@ -44,7 +43,6 @@ struct RichResponseTextView: View {
                 }
             }
             .padding()
-        }
     }
 
     // Helper function to parse the response

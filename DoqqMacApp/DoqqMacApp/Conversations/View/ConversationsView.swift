@@ -15,7 +15,31 @@ struct ConversationsView: View {
             sideBar
             chatView
         }
+        .toolbar {
+            ToolbarItem(placement: .automatic) {
+                        Button(action: selectFolder) {
+                            Image(systemName: "plus")
+                                .help("Select a folder")
+                        }
+                        .buttonStyle(BorderlessButtonStyle())
+                    }
+                }
     }
+    
+    private func selectFolder() {
+            let openPanel = NSOpenPanel()
+            openPanel.canChooseFiles = false
+            openPanel.canChooseDirectories = true
+            openPanel.allowsMultipleSelection = false
+
+            if openPanel.runModal() == .OK, let selectedURL = openPanel.url {
+                let selectedFolderPath = selectedURL.path
+                print("Selected folder: \(selectedFolderPath)")
+                Task {
+                    await viewModel.processFiles(cocoapodsRoot: selectedFolderPath)
+                }
+            }
+        }
     
     var chatView: some View {
         ZStack(alignment: .bottom) { // Align content to the bottom

@@ -13,12 +13,13 @@ struct CodeView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            if let detectedLanguage = detectLanguage(from: codeSnippet) {
-                Text("Detected Language: \(detectedLanguage)")
+            if let detectedLanguage = detectLanguage(from: codeSnippet),
+               let extractedCode = extractCode(from: codeSnippet) {
+                Text("Detected Language: \(detectedLanguage.capitalized)")
                     .font(.headline)
                     .foregroundColor(.primary)
                 
-                CodeViewRepresentable(code: codeSnippet,
+                CodeViewRepresentable(code: extractedCode,
                                       language: detectedLanguage)
                 .frame(height: 300) // Adjust height as needed
             } else {
@@ -32,39 +33,30 @@ struct CodeView: View {
                 }
             }
         }
+        .padding()
     }
     
     // Function to detect the language of the code snippet
     func detectLanguage(from code: String) -> String? {
-        // Check for language in code fences
-        if let languageMatch = code.range(of: "```([a-zA-Z0-9_+-]+)", options: .regularExpression) {
-            let language = String(code[languageMatch])
-                .replacingOccurrences(of: "```", with: "")
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-            return language.capitalized
-        }
-        
-        // Fallback to heuristic-based detection
-        let keywords: [String: [String]] = [
-            "Swift": ["import Foundation", "func", "let", "var"],
-            "Python": ["def", "import", "print", "self"],
-            "JavaScript": ["function", "const", "let", "var"],
-            "Java": ["public class", "static void", "import java"],
-            "C++": ["#include", "std::", "int main()"],
-            "HTML": ["<html>", "<body>", "<head>"],
-            "CSS": ["color:", "background:", "font-size:"],
-            "Kotlin": ["fun main", "val", "var", "import kotlin"]
-        ]
-        
-        for (language, patterns) in keywords {
-            if patterns.contains(where: { code.contains($0) }) {
-                return language
+        let regex = try! NSRegularExpression(pattern: "```([a-zA-Z0-9_+-]+)")
+        if let match = regex.firstMatch(in: code, range: NSRange(code.startIndex..., in: code)) {
+            if let range = Range(match.range(at: 1), in: code) {
+                return String(code[range])
             }
         }
-        
         return nil
     }
     
+    // Function to extract the code block from the snippet
+    func extractCode(from code: String) -> String? {
+        let regex = try! NSRegularExpression(pattern: "```[a-zA-Z0-9_+-]+\\n([\\s\\S]+)```", options: [])
+        if let match = regex.firstMatch(in: code, range: NSRange(code.startIndex..., in: code)) {
+            if let range = Range(match.range(at: 1), in: code) {
+                return String(code[range]).trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+        }
+        return nil
+    }
 }
 
 struct CodeViewRepresentable: NSViewRepresentable {
@@ -89,7 +81,7 @@ struct CodeViewRepresentable: NSViewRepresentable {
                 body {
                     font-family: monospace;
                     font-size: 14px;
-                    background-color: #f4f4f4;
+                    background-color: #000;
                     padding: 16px;
                     border-radius: 8px;
                     overflow-x: auto;
@@ -104,6 +96,7 @@ struct CodeViewRepresentable: NSViewRepresentable {
         </head>
         <body>
         <pre><code class="\(language.lowercased())">\(code.htmlEscaped)</code></pre>
+                        \(code.htmlEscaped)
         </body>
         </html>
         """
