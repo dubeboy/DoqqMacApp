@@ -13,7 +13,7 @@ import SwiftData
 class ConversationViewModel {
     
     enum State {
-        case loading, initLoaded, initLoadFail, askingLLM, errorAskingLLM, successAskingLLM
+        case loading, initLoaded, initLoadFail, askingLLM(Int), errorAskingLLM, successAskingLLM(Int)
     }
     
     @ObservationIgnored
@@ -21,9 +21,14 @@ class ConversationViewModel {
     private var context: ModelContext
     private let conversationManager = ConversationManager()
     private let primeMessage = primeString
+    private let endSignal = "_END_CHUNK_SEND_"
 
     var state: State = .loading
-    var selectedSession: Int = 0
+    var selectedSession: Int = 0 {
+        didSet {
+            loadSelectedSessionConversations(session: selectedSession)
+        }
+    }
     var numErrorWhenSendingChunks: Int = 0
     var sessions: [ConversationSessionModel] {
         conversationManager.sessions
@@ -38,9 +43,11 @@ class ConversationViewModel {
         self.context = context
         do {
             try conversationManager.loadSessions(with: context)
-            selectedSessionMessages = sessions[selectedSession].chatHistory.map { message in
-                    .init(role: message.role, content: message.content)
+            guard !sessions.isEmpty else {
+                state = .initLoaded
+                return
             }
+            selectedSessionMessages = sessions[selectedSession].chatHistory.map(MessageStateModel.init(message:))
             state = .initLoaded
         } catch {
             print("Error")
@@ -55,19 +62,28 @@ class ConversationViewModel {
             let message = MessageStateModel(role: "user", content: message, isQuery: true)
             selectedSessionMessages.append(message)
             let response = try await conversationManager.askDoqq(session: selectedSession, name: name, message: message.toPayload())
-            selectedSessionMessages.append(.init(role: response.message.role, content: response.message.content))
+            selectedSessionMessages.append(.init(role: response.message.role, content: response.message.content, isQuery: false))
             state = .successAskingLLM
         } catch {
             state = .errorAskingLLM
         }
     }
     
-    func selectSession(session id: Int) {
-        selectedSession = id
-        // change this variable data to the data of this session `selectedSessionMessages`
+    private func loadSelectedSessionConversations(session id: Int) {
+        selectedSessionMessages = []
+        do {
+            selectedSessionMessages = try conversationManager.findSession(for: id)?.chatHistory.map(MessageStateModel.init(message:)) ?? []
+        } catch {
+            print("### Error")
+            print(error)
+        }
     }
     
     func processFiles(cocoapodsRoot: String) async {
+        let selectedSessionConvesation = try? conversationManager.findSession(for: selectedSession)
+        if let selectedSessionConvesation, !selectedSessionConvesation.chatHistory.isEmpty {
+            selectedSession += 1
+        }
         let sessionName = cocoapodsRoot.components(separatedBy: "/").last ?? "New session \(selectedSession)"
         print("\n\nPrime the Llama3 agent for Project: \(sessionName)")
         selectedSessionMessages = [.init(role: "user", content: "Prime the Llama3 agent", isQuery: true)]
@@ -75,12 +91,13 @@ class ConversationViewModel {
         state = .askingLLM
         do {
             // Send prime instructions to Llama3
-            let _ = try await conversationManager.askDoqq(session: selectedSession, name: sessionName, message: Message(role: "user", content: primeMessage))
-            selectedSessionMessages.append(.init(role: "user", content: "Ok. Success Prime LLama agent"))
+            
+            let _ = try await conversationManager.askDoqq(session: selectedSession, name: sessionName, message: Message(role: "user", content: primeMessage, isQuery: true))
+            selectedSessionMessages.append(.init(role: "user", content: "Ok. Success Prime LLama agent", isQuery: false))
             
             let fileManager = FileManager.default
             let enumerator = fileManager.enumerator(atPath: cocoapodsRoot)
-            selectedSessionMessages.append(.init(role: "user", content: "Priming for dir \(cocoapodsRoot)"))
+            selectedSessionMessages.append(.init(role: "user", content: "Priming for dir \(cocoapodsRoot)", isQuery: false))
                     
             while let path = enumerator?.nextObject() as? String {
                 let fullPath = "\(cocoapodsRoot)/\(path)"
@@ -101,7 +118,8 @@ class ConversationViewModel {
                     chunkIndex += 1
                     let message = Message(
                         role: "user",
-                        content: "\(payload)"
+                        content: "\(payload)",
+                        isQuery: true
                     )
                     
                     let response = try await conversationManager.askDoqq(session: selectedSession, name: sessionName, message: message)
@@ -114,18 +132,19 @@ class ConversationViewModel {
             }
             
             if numErrorWhenSendingChunks == 0 {
-                selectedSessionMessages.append(.init(role: "user", content: "Primed \(chunkIndex) files"))
+                selectedSessionMessages.append(.init(role: "user", content: "Primed \(chunkIndex) files", isQuery: false))
                 print("### Success OPRime")
-                await askDoqq(message: "_END_CHUNK_SEND_", name: sessionName)
+                let response = try await conversationManager.askDoqq(session: selectedSession, name: sessionName, message: .init(role: "user", content: endSignal, isQuery: true, isEnd: true))
+                selectedSessionMessages.append(.init(role: "user", content: response.message.content, isQuery: false))
                 state = .initLoaded
             } else {
-                selectedSessionMessages.append(.init(role: "user", content: "Some code failed to be primed"))
+                selectedSessionMessages.append(.init(role: "user", content: "Some code failed to be primed", isQuery: false))
                 print("### Fail OPRime")
                
                 state = .initLoadFail
             }
         } catch {
-            selectedSessionMessages.append(.init(role: "user", content: "Something went wrong is Ollama running?"))
+            selectedSessionMessages.append(.init(role: "user", content: "Something went wrong is Ollama running?", isQuery: false))
             state = .initLoadFail
             
         }

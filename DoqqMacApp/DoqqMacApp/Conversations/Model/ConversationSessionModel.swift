@@ -19,4 +19,10 @@ class ConversationSessionModel: Identifiable {
         self.name = name
         self.chatHistory = chatHistory
     }
+    
+    static func addBidirection(session: ConversationSessionModel, messages: [Message]) -> Void {
+        messages.forEach { message in
+            message.session = session
+        }
+    }
 }

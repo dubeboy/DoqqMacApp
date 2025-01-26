@@ -9,6 +9,7 @@ import SwiftData
 import Foundation
 
 /// Conversation manager and data amanger for the viewmodel
+@MainActor
 class ConversationManager {
     private(set) var sessions: [ConversationSessionModel] = []
     private let conversationService = ConversationService()
@@ -17,8 +18,11 @@ class ConversationManager {
     
     func askDoqq(session id: Int, name: String, message: Message) async throws -> OllamaResponse {
         if sessions.count <= id { // even if it fails to send eg network issue, that is fine as it will not be persisted to DB
-            sessions.append(ConversationSessionModel(id: id, name: name, chatHistory: [message]))
+            let session = ConversationSessionModel(id: id, name: name, chatHistory: [message])
+            ConversationSessionModel.addBidirection(session: session, messages: [message])
+            sessions.append(session)
         } else {
+            message.session = sessions[id]
             sessions[id].chatHistory.append(message)
         }
         
@@ -30,26 +34,33 @@ class ConversationManager {
     
     /// adds this session to local DB
     private func appendSessionToLocalDB(id: Int, name: String, messages: [Message]) throws {
-        
         let predicate = #Predicate<ConversationSessionModel> { session in
-           session.id == id
+            session.id == id
         }
         
         let fetchDescriptor = FetchDescriptor<ConversationSessionModel>(predicate: predicate)
         if let session = try modelContext.fetch(fetchDescriptor).first {
-            messages.forEach { message in
-                message.session = session
-            }
+            ConversationSessionModel.addBidirection(session: session, messages: messages)
             session.chatHistory.append(contentsOf: messages)
         } else {
-            modelContext.insert(ConversationSessionModel(id: id, name: name, chatHistory: messages))
+            let session = ConversationSessionModel(id: id, name: name, chatHistory: messages)
+            ConversationSessionModel.addBidirection(session: session, messages: messages)
+            modelContext.insert(session)
         }
         
-                if modelContext.hasChanges {
-                    try modelContext.save()
-                }
-       
-
+        if modelContext.hasChanges {
+            try modelContext.save()
+        }
+    }
+    
+    func findSession(for id: Int) throws -> ConversationSessionModel? {
+        let predicate = #Predicate<ConversationSessionModel> { session in
+            session.id == id
+        }
+        let fetchDescriptor = FetchDescriptor<ConversationSessionModel>(predicate: predicate)
+        let session = try modelContext.fetch(fetchDescriptor).first
+        
+        return session
     }
     
     /// loads sessions from local store

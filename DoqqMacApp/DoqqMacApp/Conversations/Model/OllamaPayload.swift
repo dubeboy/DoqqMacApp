@@ -19,6 +19,8 @@ class Message: Codable, Identifiable {
     @Attribute(.unique) var id: String
     var role: String
     var content: String
+    var isQuery: Bool
+    var isEnd: Bool  // Clearly indicates the end of the prime process so that we can ommit all the prime messages
     
     // Inverse relationship to ConversationSessionModel
     var session: ConversationSessionModel?
@@ -27,10 +29,12 @@ class Message: Codable, Identifiable {
         case role, content
     }
     
-    init(role: String, content: String) {
+    init(role: String, content: String, isQuery: Bool, isEnd: Bool = false) {
         self.role = role
         self.content = content
         self.id = UUID().uuidString
+        self.isQuery = isQuery
+        self.isEnd = isEnd
     }
     
     required init(from decoder: any Decoder) throws {
@@ -38,6 +42,8 @@ class Message: Codable, Identifiable {
         self.role = try container.decode(String.self, forKey: .role)
         self.content = try container.decode(String.self, forKey: .content)
         self.id = UUID().uuidString
+        self.isEnd = false
+        self.isQuery = false
     }
     
     func encode(to encoder: Encoder) throws {
