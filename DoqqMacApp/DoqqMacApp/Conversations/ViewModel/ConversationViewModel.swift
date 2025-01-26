@@ -7,15 +7,21 @@
 
 import SwiftUI
 import Foundation
+import SwiftData
 
 @Observable
 class ConversationViewModel {
+    
     enum State {
         case loading, initLoaded, initLoadFail, askingLLM, errorAskingLLM, successAskingLLM
     }
     
+    @ObservationIgnored
+    @LateInitialized
+    private var context: ModelContext
     private let conversationManager = ConversationManager()
-    private let primeMessage = "From now on, you are my ‘Smart Code Documentation Search Agent.’ You will help me search and check if certain or similar code exists in my library using natural language queries. For example, if I ask: ‘Code that can change the UINavigationBar to Green,’ you should respond with any relevant code from my previously shared library. The library code will be provided to you in subsequent prompts in JSON format, with the keys ‘filename’, ‘relativePath’, and ‘content’ (the actual code). You must not answer any code search queries until I explicitly send the end signal ‘END_CHUNK_SEND’. Once you receive this signal, you may answer queries by referencing the appropriate chunk index in Markdown format if relevant code exists. If no relevant code is found, simply state that nothing matches the query."
+    private let primeMessage = primeString
+
     var state: State = .loading
     var selectedSession: Int = 0
     var numErrorWhenSendingChunks: Int = 0
@@ -23,23 +29,32 @@ class ConversationViewModel {
         conversationManager.sessions
     }
     
+    /// Current session that we can see on the view
     var selectedSessionMessages: [MessageStateModel] = []
     
-    func loadSessions() async {
+    /// sets the model
+    /// Call this on viewdidApear
+    func loadSessions(with context: ModelContext) {
+        self.context = context
         do {
-            let _ = try await conversationManager.loadSessions()
+            try conversationManager.loadSessions(with: context)
+            selectedSessionMessages = sessions[selectedSession].chatHistory.map { message in
+                    .init(role: message.role, content: message.content)
+            }
             state = .initLoaded
         } catch {
+            print("Error")
+            print(error)
             state = .initLoadFail
         }
     }
     
-    func askDoqq(message: String) async {
+    func askDoqq(message: String, name: String = "New Session") async {
         do {
             state = .askingLLM
             let message = MessageStateModel(role: "user", content: message, isQuery: true)
             selectedSessionMessages.append(message)
-            let response = try await conversationManager.askDoqq(session: selectedSession, message: message.toPayload())
+            let response = try await conversationManager.askDoqq(session: selectedSession, name: name, message: message.toPayload())
             selectedSessionMessages.append(.init(role: response.message.role, content: response.message.content))
             state = .successAskingLLM
         } catch {
@@ -53,13 +68,14 @@ class ConversationViewModel {
     }
     
     func processFiles(cocoapodsRoot: String) async {
-        print("\n\nPrime the Llama3 agent")
+        let sessionName = cocoapodsRoot.components(separatedBy: "/").last ?? "New session \(selectedSession)"
+        print("\n\nPrime the Llama3 agent for Project: \(sessionName)")
         selectedSessionMessages = [.init(role: "user", content: "Prime the Llama3 agent", isQuery: true)]
         var chunkIndex = 0
         state = .askingLLM
         do {
             // Send prime instructions to Llama3
-            let _ = try await conversationManager.askDoqq(session: selectedSession, message: Message(role: "user", content: primeMessage))
+            let _ = try await conversationManager.askDoqq(session: selectedSession, name: sessionName, message: Message(role: "user", content: primeMessage))
             selectedSessionMessages.append(.init(role: "user", content: "Ok. Success Prime LLama agent"))
             
             let fileManager = FileManager.default
@@ -88,7 +104,7 @@ class ConversationViewModel {
                         content: "\(payload)"
                     )
                     
-                    let response = try await conversationManager.askDoqq(session: selectedSession, message: message)
+                    let response = try await conversationManager.askDoqq(session: selectedSession, name: sessionName, message: message)
                     print("### PRIME")
                     dump(response)
                 } catch {
@@ -100,7 +116,7 @@ class ConversationViewModel {
             if numErrorWhenSendingChunks == 0 {
                 selectedSessionMessages.append(.init(role: "user", content: "Primed \(chunkIndex) files"))
                 print("### Success OPRime")
-                await askDoqq(message: "_END_CHUNK_SEND_")
+                await askDoqq(message: "_END_CHUNK_SEND_", name: sessionName)
                 state = .initLoaded
             } else {
                 selectedSessionMessages.append(.init(role: "user", content: "Some code failed to be primed"))
@@ -125,3 +141,89 @@ extension FileManager {
         return isDir.boolValue
     }
 }
+
+@propertyWrapper
+struct LateInitialized<Value> {
+    private var storage: Value?
+
+    var wrappedValue: Value {
+        get {
+            guard let storage = storage else {
+                fatalError("Property accessed before being initialized.") // should probably not crash the app report this instead
+            }
+            return storage
+        }
+        set {
+            storage = newValue
+        }
+    }
+
+    init() {
+        self.storage = nil
+    }
+}
+
+let primeString =  """
+    ### Smart Code Documentation Search Agent Instructions
+
+    From now on, you will act as my **Smart Code Documentation Search Agent**. Your primary role is to assist me in searching and identifying whether specific or similar code exists in my code library based on natural language queries. 
+
+    #### How It Works:
+    1. **Input Format**:  
+       I will provide my library code to you in JSON format. Each entry will contain the following keys:  
+       - `filename`: The name of the file.  
+       - `relativePath`: The relative path to the file.  
+       - `content`: The actual code content.  
+
+    2. **Query Handling**:  
+       - I will ask you questions in natural language, such as:  
+         *"Code that can change the UINavigationBar to Green."*  
+       - You will search through the provided library code and respond with any relevant matches.  
+
+    3. **Response Format**:  
+       - If relevant code is found, reference the appropriate chunk index in **Markdown format** (e.g., `[Chunk 1]`).  
+       - If no relevant code is found, simply state:  
+         *"No matching code found for the query."*  
+
+    4. **Initialization Signal**:  
+       - You must **not answer any code search queries** until I explicitly send the signal:  
+         `END_CHUNK_SEND`.  
+       - Once you receive this signal, you may begin answering queries based on the provided library code.
+
+    ---
+
+    ### Example Interaction
+
+    #### Input (Library Code in JSON Format):
+    ```json
+    [
+      {
+        "filename": "ViewController.swift",
+        "relativePath": "iOSApp/Views",
+        "content": "class ViewController: UIViewController {\n  override func viewDidLoad() {\n    super.viewDidLoad()\n    navigationController?.navigationBar.barTintColor = .green\n  }\n}"
+      }
+    ]
+
+    #### Signal:
+    `END_CHUNK_SEND`
+
+    #### Query:
+    "Code that can change the UINavigationBar to Green."
+
+    #### Response:
+    "Relevant code found in `[Chunk 1]`."
+        ```swift
+            class ViewController: UIViewController {
+                override func viewDidLoad() {
+                    super.viewDidLoad()
+                    navigationController?.navigationBar.barTintColor = .green
+                }
+            }
+        ```
+    ---
+
+    ### Key Rules:
+    - Wait for the `END_CHUNK_SEND` signal before answering any queries.  
+    - Always reference the chunk index in Markdown format if relevant code is found.  
+    - If no matching code exists, clearly state that nothing matches the query.
+"""

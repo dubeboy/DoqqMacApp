@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ConversationsView: View {
-    @State var viewModel = ConversationViewModel()
+    @Environment(\.modelContext) private var modelContext
+    @State var viewModel: ConversationViewModel = ConversationViewModel() // it being being nil is a problem we could make modelContext nullable in the viewmodel instead
     
     var body: some View {
         NavigationView {
@@ -17,29 +19,32 @@ struct ConversationsView: View {
         }
         .toolbar {
             ToolbarItem(placement: .automatic) {
-                        Button(action: selectFolder) {
-                            Image(systemName: "plus")
-                                .help("Select a folder")
-                        }
-                        .buttonStyle(BorderlessButtonStyle())
-                    }
+                Button(action: selectFolder) {
+                    Image(systemName: "plus")
+                        .help("Select a folder")
                 }
+                .buttonStyle(BorderlessButtonStyle())
+            }
+        }
+        .onAppear {
+            viewModel.loadSessions(with: modelContext)
+        }
     }
     
     private func selectFolder() {
-            let openPanel = NSOpenPanel()
-            openPanel.canChooseFiles = false
-            openPanel.canChooseDirectories = true
-            openPanel.allowsMultipleSelection = false
-
-            if openPanel.runModal() == .OK, let selectedURL = openPanel.url {
-                let selectedFolderPath = selectedURL.path
-                print("Selected folder: \(selectedFolderPath)")
-                Task {
-                    await viewModel.processFiles(cocoapodsRoot: selectedFolderPath)
-                }
+        let openPanel = NSOpenPanel()
+        openPanel.canChooseFiles = false
+        openPanel.canChooseDirectories = true
+        openPanel.allowsMultipleSelection = false
+        
+        if openPanel.runModal() == .OK, let selectedURL = openPanel.url {
+            let selectedFolderPath = selectedURL.path
+            print("Selected folder: \(selectedFolderPath)")
+            Task {
+                await viewModel.processFiles(cocoapodsRoot: selectedFolderPath)
             }
         }
+    }
     
     var chatView: some View {
         ZStack(alignment: .bottom) { // Align content to the bottom
@@ -70,7 +75,7 @@ struct ConversationsView: View {
                 }
                 .padding(.bottom, 90) // Ensure the list doesn't overlap the input view
             }
-
+            
             ChatInputView { message in
                 Task {
                     await viewModel.askDoqq(message: message)

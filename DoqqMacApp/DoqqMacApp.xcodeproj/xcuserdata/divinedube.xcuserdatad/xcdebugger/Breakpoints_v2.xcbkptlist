@@ -14,9 +14,9 @@
             filePath = "DoqqMacApp/Conversations/ViewModel/ConversationManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "14"
-            endingLineNumber = "14"
-            landmarkName = "askDoqq(session:message:)"
+            startingLineNumber = "20"
+            endingLineNumber = "20"
+            landmarkName = "askDoqq(session:name:message:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -30,9 +30,9 @@
             filePath = "DoqqMacApp/Conversations/ViewModel/ConversationManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16"
-            endingLineNumber = "16"
-            landmarkName = "askDoqq(session:message:)"
+            startingLineNumber = "22"
+            endingLineNumber = "22"
+            landmarkName = "askDoqq(session:name:message:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -62,9 +62,99 @@
             filePath = "DoqqMacApp/Conversations/ViewModel/ConversationManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "19"
-            endingLineNumber = "19"
-            landmarkName = "askDoqq(session:message:)"
+            startingLineNumber = "25"
+            endingLineNumber = "25"
+            landmarkName = "askDoqq(session:name:message:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "4513696B-8489-4F9C-9D09-C28EE34CC249 - 97e2bd34f2c9481e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for DoqqMacApp.ConversationManager.askDoqq(session: Swift.Int, name: Swift.String, message: DoqqMacApp.Message) async throws -&gt; DoqqMacApp.OllamaResponse"
+                  moduleName = "DoqqMacApp.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/divinedube/Developer/Self/Doqq/DoqqMacApp/DoqqMacApp/Conversations/ViewModel/ConversationManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "25"
+                  endingLineNumber = "25">
+               </Location>
+               <Location
+                  uuid = "4513696B-8489-4F9C-9D09-C28EE34CC249 - d64887df8199e00d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for DoqqMacApp.ConversationManager.askDoqq(session: Swift.Int, name: Swift.String, message: DoqqMacApp.Message) async throws -&gt; DoqqMacApp.OllamaResponse"
+                  moduleName = "DoqqMacApp.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/divinedube/Developer/Self/Doqq/DoqqMacApp/DoqqMacApp/Conversations/ViewModel/ConversationManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "25"
+                  endingLineNumber = "25">
+               </Location>
+               <Location
+                  uuid = "4513696B-8489-4F9C-9D09-C28EE34CC249 - 3b50e95168900c1c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for DoqqMacApp.ConversationManager.askDoqq(session: Swift.Int, name: Swift.String, message: DoqqMacApp.Message) async throws -&gt; DoqqMacApp.OllamaResponse"
+                  moduleName = "DoqqMacApp.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/divinedube/Developer/Self/Doqq/DoqqMacApp/DoqqMacApp/Conversations/ViewModel/ConversationManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "25"
+                  endingLineNumber = "25">
+               </Location>
+               <Location
+                  uuid = "4513696B-8489-4F9C-9D09-C28EE34CC249 - f297ff8355836263"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for DoqqMacApp.ConversationManager.askDoqq(session: Swift.Int, name: Swift.String, message: DoqqMacApp.Message) async throws -&gt; DoqqMacApp.OllamaResponse"
+                  moduleName = "DoqqMacApp.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/divinedube/Developer/Self/Doqq/DoqqMacApp/DoqqMacApp/Conversations/ViewModel/ConversationManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "25"
+                  endingLineNumber = "25">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "458E45FF-FC47-4479-A135-CC54CF886248"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DoqqMacApp/Conversations/ViewModel/ConversationManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "61"
+            endingLineNumber = "61"
+            landmarkName = "loadSessions(with:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "52259B87-D09D-45BA-82E1-B2DC45D5257D"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DoqqMacApp/Conversations/ViewModel/ConversationManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
+            landmarkName = "appendSessionToLocalDB(id:name:messages:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

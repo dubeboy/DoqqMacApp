@@ -6,9 +6,17 @@
 //
 
 import Foundation
+import SwiftData
 
-struct ConversationSessionModel: Identifiable {
-    let id: Int // Simple old increment by one ID, because why not
-    let name: String
+@Model
+class ConversationSessionModel: Identifiable {
+    @Attribute(.unique) var id: Int // Simple old increment by one ID, because why not
+    var name: String
     var chatHistory: [Message]
+    
+    init(id: Int, name: String, chatHistory: [Message]) {
+        self.id = id
+        self.name = name
+        self.chatHistory = chatHistory
+    }
 }

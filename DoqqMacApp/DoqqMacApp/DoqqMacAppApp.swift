@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct DoqqMacAppApp: App {
@@ -13,5 +14,7 @@ struct DoqqMacAppApp: App {
         WindowGroup {
             ConversationsView()
         }
+        .modelContainer(for: ConversationSessionModel.self)
     }
 }
+
