@@ -19,6 +19,7 @@ final class DoqqHTTPServiceClient {
         let request = createURLRequestObject(for: endpoint)
         let (data, _) = try await URLSession.shared.data(for: request)
         let decoder = JSONDecoder()
+        print("## Some files")
         print(String(data: data, encoding: .utf8))
         return try decoder.decode(response.self, from: data)
     }
@@ -38,6 +39,7 @@ extension DoqqHTTPServiceClient {
         if let body = endpoint.body {
             do {
                 let jsonData = try JSONEncoder().encode(body)
+                print("## JSON DATA \(String(data: jsonData,encoding: .utf8))")
                 request.httpBody = jsonData
                 request.addValue("application/json", forHTTPHeaderField: "Content-Type")
             } catch {

@@ -26,3 +26,9 @@ class ConversationSessionModel: Identifiable {
         }
     }
 }
+
+struct ConversationSessionDTO {
+    var id: Int
+    var name: String
+    var chatHistory: [Message]
+}

@@ -21,7 +21,7 @@ class ConversationViewModel {
     private var context: ModelContext
     private let conversationManager = ConversationManager()
     private let primeMessage = primeString
-    private let endSignal = "_END_CHUNK_SEND_"
+    private let endSignal = "END_CHUNK_SEND"
 
     var state: State = .loading
     var selectedSession: Int = 0 {
@@ -30,7 +30,7 @@ class ConversationViewModel {
         }
     }
     var numErrorWhenSendingChunks: Int = 0
-    var sessions: [ConversationSessionModel] {
+    var sessions: [ConversationSessionDTO] {
         conversationManager.sessions
     }
     /// Because `selectedSession` changes per selection ,
@@ -71,7 +71,7 @@ class ConversationViewModel {
             selectedSessionMessages.append(message)
             let response = try await conversationManager.askDoqq(session: selectedSession, name: name, message: message.toPayload())
             selectedSessionMessages.append(.init(role: response.message.role, content: response.message.content, isQuery: false))
-            try await conversationManager.saveBatch()
+//            try await conversationManager.saveBatch(id: selectedSession, name: name, messages: [message.toPayload(), response.message])
             state = .successAskingLLM
         } catch {
             state = .errorAskingLLM
@@ -152,12 +152,12 @@ class ConversationViewModel {
                 )
                 selectedSessionMessages.append(.init(role: "user", content: endSignal, isQuery: true))
                 selectedSessionMessages.append(.init(role: "user", content: response.message.content, isQuery: false))
-                try await conversationManager.saveBatch()
+//                try await conversationManager.saveBatch(id: selectedSession, name: sessionName, messages: sessions[selectedSession].chatHistory)
                 state = .initLoaded
             } else {
                 selectedSessionMessages.append(.init(role: "user", content: "Some code failed to be primed", isQuery: false))
                 print("### Fail OPRime")
-                try await conversationManager.saveBatch()
+//                try await conversationManager.saveBatch(id: selectedSession, name: sessionName, messages: sessions[selectedSession].chatHistory) // Might be a source of bugs should probably have a two askDoqq funcs with isEnd + batch save and one that save after every input
                 state = .initLoadFail
             }
         } catch {
@@ -200,9 +200,10 @@ struct LateInitialized<Value> {
 }
 
 let primeString =  """
-    ### Smart Code Documentation Search Agent Instructions
+    From now on, you will act as my **Smart Code Documentation Search Agent**. Your primary role is to assist me in searching and identifying whether
+    specific or similar code exists in my code library based on natural language queries. 
 
-    From now on, you will act as my **Smart Code Documentation Search Agent**. Your primary role is to assist me in searching and identifying whether specific or similar code exists in my code library based on natural language queries. 
+    Here are the Instructions on how to do achieve this, written in Markdown format for you.
 
     #### How It Works:
     1. **Input Format**:  
@@ -214,52 +215,20 @@ let primeString =  """
     2. **Query Handling**:  
        - I will ask you questions in natural language, such as:  
          *"Code that can change the UINavigationBar to Green."*  
-       - You will search through the provided library code and respond with any relevant matches.  
+       - You will search through the provided library code and respond with any relevant matches.
 
     3. **Response Format**:  
        - If relevant code is found, reference the appropriate chunk index in **Markdown format** (e.g., `[Chunk 1]`).  
        - If no relevant code is found, simply state:  
          *"No matching code found for the query."*  
 
-    4. **Initialization Signal**:  
+    4. **Agent Initialization Signal**:  
        - You must **not answer any code search queries** until I explicitly send the signal:  
          `END_CHUNK_SEND`.  
        - Once you receive this signal, you may begin answering queries based on the provided library code.
 
-    ---
-
-    ### Example Interaction
-
-    #### Input (Library Code in JSON Format):
-    ```json
-    [
-      {
-        "filename": "ViewController.swift",
-        "relativePath": "iOSApp/Views",
-        "content": "class ViewController: UIViewController {\n  override func viewDidLoad() {\n    super.viewDidLoad()\n    navigationController?.navigationBar.barTintColor = .green\n  }\n}"
-      }
-    ]
-
-    #### Signal:
-    `END_CHUNK_SEND`
-
-    #### Query:
-    "Code that can change the UINavigationBar to Green."
-
-    #### Response:
-    "Relevant code found in `[Chunk 1]`."
-        ```swift
-            class ViewController: UIViewController {
-                override func viewDidLoad() {
-                    super.viewDidLoad()
-                    navigationController?.navigationBar.barTintColor = .green
-                }
-            }
-        ```
-    ---
-
     ### Key Rules:
-    - Wait for the `END_CHUNK_SEND` signal before answering any queries.  
+    - Wait for the `END_CHUNK_SEND` signal before answering any queries and only after this signal you answer question.  
     - Always reference the chunk index in Markdown format if relevant code is found.  
     - If no matching code exists, clearly state that nothing matches the query.
 """
