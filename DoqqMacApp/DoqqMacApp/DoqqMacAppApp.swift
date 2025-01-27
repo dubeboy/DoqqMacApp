@@ -14,7 +14,7 @@ struct DoqqMacAppApp: App {
         WindowGroup {
             ConversationsView()
         }
-        .modelContainer(for: ConversationSessionModel.self)
+        .modelContainer(for: ConversationSessionModel.self, isAutosaveEnabled: false)
     }
 }
 

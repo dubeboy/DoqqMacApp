@@ -20,7 +20,7 @@ class Message: Codable, Identifiable {
     var role: String
     var content: String
     var isQuery: Bool
-    var isEnd: Bool  // Clearly indicates the end of the prime process so that we can ommit all the prime messages
+    var isEnd: Bool  // Clearly indicates the end of the prime process so that we can ommit all the prime messages, bad variable name
     
     // Inverse relationship to ConversationSessionModel
     var session: ConversationSessionModel?

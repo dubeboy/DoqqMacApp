@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ChatInputView: View {
     @State private var messageText: String = ""
+    var disabled: Bool
     var onSend: (String) -> Void // Closure to handle sending the message
 
     var inputView: some View {
@@ -26,14 +27,15 @@ struct ChatInputView: View {
                     messageText = ""
                 }
             }) {
-                Text("Send")
+                Text(disabled ? "Please wait..." : "Send" )
                     .padding(.horizontal)
                     .padding(.vertical, 6)
                     .background(Color.blue)
                     .foregroundColor(.white)
                     .cornerRadius(6)
             }
-            .buttonStyle(PlainButtonStyle()) // For macOS, ensure buttons are styled explicitly
+            .buttonStyle(PlainButtonStyle())
+            .disabled(disabled)
         }
         .padding()
         .background(Color.black.opacity(0.2))
@@ -48,7 +50,7 @@ struct ChatInputView: View {
 
 struct ChatInputView_Previews: PreviewProvider {
     static var previews: some View {
-        ChatInputView { message in
+        ChatInputView(disabled: false) { message in
             print("Message sent: \(message)")
         }
         .frame(width: 400) // Add a width for macOS preview

@@ -13,7 +13,7 @@ import SwiftData
 class ConversationViewModel {
     
     enum State {
-        case loading, initLoaded, initLoadFail, askingLLM(Int), errorAskingLLM, successAskingLLM(Int)
+        case loading, initLoaded, initLoadFail, askingLLM, errorAskingLLM, successAskingLLM
     }
     
     @ObservationIgnored
@@ -33,13 +33,18 @@ class ConversationViewModel {
     var sessions: [ConversationSessionModel] {
         conversationManager.sessions
     }
-    
+    /// Because `selectedSession` changes per selection ,
+    /// we need to disable until we are done interacating with LLM agent to avoid race conditions
+    var disableInteraction: Bool {
+        state == .askingLLM
+    }
     /// Current session that we can see on the view
     var selectedSessionMessages: [MessageStateModel] = []
     
     /// sets the model
     /// Call this on viewdidApear
     func loadSessions(with context: ModelContext) {
+        state = .askingLLM
         self.context = context
         do {
             try conversationManager.loadSessions(with: context)
@@ -47,7 +52,10 @@ class ConversationViewModel {
                 state = .initLoaded
                 return
             }
-            selectedSessionMessages = sessions[selectedSession].chatHistory.map(MessageStateModel.init(message:))
+            selectedSession = sessions.count - 1
+            selectedSessionMessages = sessions[selectedSession].chatHistory.compactMap { message in
+                message.isEnd ? nil : MessageStateModel(message: message)
+            }
             state = .initLoaded
         } catch {
             print("Error")
@@ -63,6 +71,7 @@ class ConversationViewModel {
             selectedSessionMessages.append(message)
             let response = try await conversationManager.askDoqq(session: selectedSession, name: name, message: message.toPayload())
             selectedSessionMessages.append(.init(role: response.message.role, content: response.message.content, isQuery: false))
+            try await conversationManager.saveBatch()
             state = .successAskingLLM
         } catch {
             state = .errorAskingLLM
@@ -72,7 +81,9 @@ class ConversationViewModel {
     private func loadSelectedSessionConversations(session id: Int) {
         selectedSessionMessages = []
         do {
-            selectedSessionMessages = try conversationManager.findSession(for: id)?.chatHistory.map(MessageStateModel.init(message:)) ?? []
+            selectedSessionMessages = try conversationManager.findSession(for: id)?.chatHistory.compactMap { message in
+                message.isEnd ? nil : MessageStateModel(message: message)
+            } ?? []
         } catch {
             print("### Error")
             print(error)
@@ -80,19 +91,19 @@ class ConversationViewModel {
     }
     
     func processFiles(cocoapodsRoot: String) async {
+        state = .askingLLM
         let selectedSessionConvesation = try? conversationManager.findSession(for: selectedSession)
         if let selectedSessionConvesation, !selectedSessionConvesation.chatHistory.isEmpty {
-            selectedSession += 1
+            selectedSession = sessions.count
         }
         let sessionName = cocoapodsRoot.components(separatedBy: "/").last ?? "New session \(selectedSession)"
         print("\n\nPrime the Llama3 agent for Project: \(sessionName)")
         selectedSessionMessages = [.init(role: "user", content: "Prime the Llama3 agent", isQuery: true)]
         var chunkIndex = 0
-        state = .askingLLM
         do {
             // Send prime instructions to Llama3
             
-            let _ = try await conversationManager.askDoqq(session: selectedSession, name: sessionName, message: Message(role: "user", content: primeMessage, isQuery: true))
+            let _ = try await conversationManager.askDoqq(session: selectedSession, name: sessionName, message: Message(role: "user", content: primeMessage, isQuery: true, isEnd: true))
             selectedSessionMessages.append(.init(role: "user", content: "Ok. Success Prime LLama agent", isQuery: false))
             
             let fileManager = FileManager.default
@@ -119,7 +130,8 @@ class ConversationViewModel {
                     let message = Message(
                         role: "user",
                         content: "\(payload)",
-                        isQuery: true
+                        isQuery: true,
+                        isEnd: true
                     )
                     
                     let response = try await conversationManager.askDoqq(session: selectedSession, name: sessionName, message: message)
@@ -134,13 +146,18 @@ class ConversationViewModel {
             if numErrorWhenSendingChunks == 0 {
                 selectedSessionMessages.append(.init(role: "user", content: "Primed \(chunkIndex) files", isQuery: false))
                 print("### Success OPRime")
-                let response = try await conversationManager.askDoqq(session: selectedSession, name: sessionName, message: .init(role: "user", content: endSignal, isQuery: true, isEnd: true))
+                let response = try await conversationManager.askDoqq(
+                    session: selectedSession, name: sessionName,
+                    message: .init(role: "user",content: endSignal, isQuery: true,isEnd: true)
+                )
+                selectedSessionMessages.append(.init(role: "user", content: endSignal, isQuery: true))
                 selectedSessionMessages.append(.init(role: "user", content: response.message.content, isQuery: false))
+                try await conversationManager.saveBatch()
                 state = .initLoaded
             } else {
                 selectedSessionMessages.append(.init(role: "user", content: "Some code failed to be primed", isQuery: false))
                 print("### Fail OPRime")
-               
+                try await conversationManager.saveBatch()
                 state = .initLoadFail
             }
         } catch {

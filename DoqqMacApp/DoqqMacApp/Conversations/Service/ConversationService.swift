@@ -25,6 +25,8 @@ final class ConversationService {
     private let service = DoqqHTTPServiceClient.shared
     
     func sendToLlama3(messages: [Message]) async throws -> OllamaResponse {
-        try await service.makeRequest(ConversationEndpoint.chat(messages), for: OllamaResponse.self)
+        print("Messages count \(messages.count)")
+        dump(messages)
+        return try await service.makeRequest(ConversationEndpoint.chat(messages), for: OllamaResponse.self)
     }
 }

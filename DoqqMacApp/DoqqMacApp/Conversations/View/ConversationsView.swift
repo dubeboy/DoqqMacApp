@@ -24,6 +24,7 @@ struct ConversationsView: View {
                         .help("Select a folder")
                 }
                 .buttonStyle(BorderlessButtonStyle())
+                .disabled(viewModel.disableInteraction)
             }
         }
         .onAppear {
@@ -76,7 +77,7 @@ struct ConversationsView: View {
                 .padding(.bottom, 90) // Ensure the list doesn't overlap the input view
             }
             
-            ChatInputView { message in
+            ChatInputView(disabled: viewModel.disableInteraction) { message in
                 Task {
                     await viewModel.askDoqq(message: message)
                 }
@@ -86,9 +87,10 @@ struct ConversationsView: View {
     }
     
     var sideBar: some View {
-        List(viewModel.sessions, selection: $viewModel.selectedSession) { session in
+        List(viewModel.sessions, id: \.id, selection: $viewModel.selectedSession) { session in
             Text(session.name)
         }
+        .disabled(viewModel.disableInteraction)
     }
 }
 

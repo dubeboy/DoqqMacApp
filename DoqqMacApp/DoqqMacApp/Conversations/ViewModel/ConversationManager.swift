@@ -9,7 +9,6 @@ import SwiftData
 import Foundation
 
 /// Conversation manager and data amanger for the viewmodel
-@MainActor
 class ConversationManager {
     private(set) var sessions: [ConversationSessionModel] = []
     private let conversationService = ConversationService()
@@ -28,31 +27,36 @@ class ConversationManager {
         
         let response = try await conversationService.sendToLlama3(messages: sessions[id].chatHistory) // There is a problem
         sessions[id].chatHistory.append(response.message)
-        try appendSessionToLocalDB(id: id, name: name, messages: [message, response.message])
+//        try await appendSessionToLocalDB(id: id, name: name, messages: [message, response.message])
         return response
     }
     
     /// adds this session to local DB
-    private func appendSessionToLocalDB(id: Int, name: String, messages: [Message]) throws {
-        let predicate = #Predicate<ConversationSessionModel> { session in
-            session.id == id
-        }
-        
-        let fetchDescriptor = FetchDescriptor<ConversationSessionModel>(predicate: predicate)
-        if let session = try modelContext.fetch(fetchDescriptor).first {
-            ConversationSessionModel.addBidirection(session: session, messages: messages)
-            session.chatHistory.append(contentsOf: messages)
-        } else {
-            let session = ConversationSessionModel(id: id, name: name, chatHistory: messages)
-            ConversationSessionModel.addBidirection(session: session, messages: messages)
-            modelContext.insert(session)
-        }
-        
-        if modelContext.hasChanges {
-            try modelContext.save()
-        }
+    @MainActor
+    private func save(id: Int, name: String, messages: [Message]) throws {
+//        let predicate = #Predicate<ConversationSessionModel> { session in
+//            session.id == id
+//        }
+//        
+//        let fetchDescriptor = FetchDescriptor<ConversationSessionModel>(predicate: predicate)
+//        if let session = try modelContext.fetch(fetchDescriptor).first {
+//            ConversationSessionModel.addBidirection(session: session, messages: messages)
+//            session.chatHistory.append(contentsOf: messages)
+//        } else {
+//            let session = ConversationSessionModel(id: id, name: name, chatHistory: messages)
+//            ConversationSessionModel.addBidirection(session: session, messages: messages)
+//            modelContext.insert(session)
+//        }
+        try modelContext.save()
     }
     
+    @MainActor
+     func saveBatch() throws {
+        try modelContext.save()
+    }
+    
+    
+//    @MainActor
     func findSession(for id: Int) throws -> ConversationSessionModel? {
         let predicate = #Predicate<ConversationSessionModel> { session in
             session.id == id
@@ -65,9 +69,10 @@ class ConversationManager {
     
     /// loads sessions from local store
     /// sets the context
+//    @MainActor
     func loadSessions(with context: ModelContext) throws {
         self.modelContext = context
-        let fetchDescriptor = FetchDescriptor<ConversationSessionModel>()
+        let fetchDescriptor = FetchDescriptor<ConversationSessionModel>(sortBy: [ SortDescriptor(\.id, order: .reverse) ])
         let sessions = try modelContext.fetch(fetchDescriptor)
         self.sessions = sessions
     }
