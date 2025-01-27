@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+//import MarkD
 
 struct ConversationsView: View {
     @Environment(\.modelContext) private var modelContext
@@ -54,14 +55,14 @@ struct ConversationsView: View {
                     ForEach(viewModel.selectedSessionMessages, id: \.id) { message in
                         HStack {
                             if message.isQuery {
-                                Spacer() // Push the bubble to the right
-                                RichResponseTextView(response: message.content)
+                                Spacer()
+                                MarkdownView(text: message.content)
                             } else {
-                                RichResponseTextView(response: message.content)
-                                Spacer() // Push the bubble to the left
+                                MarkdownView(text: message.content)
+                                Spacer()
                             }
                         }
-                        .padding(.vertical, 4) // Add spacing between messages
+                        .padding(.vertical, 4)
                     }
                     
                     switch viewModel.state {

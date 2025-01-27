@@ -21,16 +21,14 @@ struct CodeView: View {
                 
                 CodeViewRepresentable(code: extractedCode,
                                       language: detectedLanguage)
-                .frame(height: 300) // Adjust height as needed
+                .frame(height: nil) // Adjust height as needed
             } else {
-                ScrollView(.horizontal) {
                     Text(codeSnippet)
                         .font(.system(.body, design: .monospaced))
                         .foregroundColor(.green)
                         .padding()
                         .background(Color.black.opacity(0.1))
                         .cornerRadius(8)
-                }
             }
         }
         .padding()
@@ -82,21 +80,33 @@ struct CodeViewRepresentable: NSViewRepresentable {
                     font-family: monospace;
                     font-size: 14px;
                     background-color: #000;
-                    padding: 16px;
-                    border-radius: 8px;
-                    overflow-x: auto;
+                    margin: 0;
+                    padding: 0;
+                    overflow: hidden;
                 }
                 pre {
                     background: #282c34;
                     color: #abb2bf;
-                    padding: 12px;
+                    padding: 16px;
                     border-radius: 8px;
+                    white-space: pre; /* Prevent text wrapping */
+                    word-wrap: normal;
+                    overflow-x: auto; /* Allow horizontal scrolling */
+                    margin: 0;
+                    width: 100%; /* Ensure it takes up available space */
+                    height: 100%; /* Ensure it takes up available space */
+                    box-sizing: border-box;
+                }
+                code {
+                    display: block; /* Make the code take full width */
+                    white-space: pre-wrap; /* Allow wrapping for large content */
+                    word-wrap: break-word; /* Ensure words break when too long */
+                    padding: 0;
                 }
             </style>
         </head>
         <body>
         <pre><code class="\(language.lowercased())">\(code.htmlEscaped)</code></pre>
-                        \(code.htmlEscaped)
         </body>
         </html>
         """
