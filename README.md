@@ -35,11 +35,11 @@ The app uses **llama 7b**, an AI model, which operates locally, ensuring that no
    - Download Ollama by visiting [Ollama's official site](https://ollama.ai/).
    - Pull the required Ollama model:
      ```bash
-     ollama pull ollama-7b
+     ollama run llama3.3
      ```
    - Run Ollama locally:
      ```bash
-     ollama run
+     ollama run llama3.3
      ```
 
 ### Running the App
@@ -47,7 +47,7 @@ The app uses **llama 7b**, an AI model, which operates locally, ensuring that no
 1. Clone the repository:
    ```bash
    git clone https://github.com/your-repo/doqq.git
-   cd doqq
+   cd `doqq/DoqqMacApp`
 2. Run the app
    You can use xcode, will be providing binaries soon
 
