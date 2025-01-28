@@ -27,6 +27,13 @@ struct ConversationsView: View {
                 .buttonStyle(BorderlessButtonStyle())
                 .disabled(viewModel.disableInteraction)
             }
+            ToolbarItem(placement: .navigation) { // Use `.primaryAction` for right-aligned items
+                Button(action: {}) {
+                                Image(systemName: "gearshape") // Use any SF Symbol or custom icon
+                                    .help("Settings or additional options")
+                            }
+                            .buttonStyle(BorderlessButtonStyle())
+                        }
         }
         .onAppear {
             viewModel.loadSessions(with: modelContext)

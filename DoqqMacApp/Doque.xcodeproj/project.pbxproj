@@ -29,38 +29,38 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		6B97ED3B2D2B0C4100AED7BE /* DoqqMacApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DoqqMacApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		6B97ED4C2D2B0C4300AED7BE /* DoqqMacAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DoqqMacAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		6B97ED562D2B0C4300AED7BE /* DoqqMacAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DoqqMacAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6B97ED3B2D2B0C4100AED7BE /* Doque.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Doque.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6B97ED4C2D2B0C4300AED7BE /* DoqueTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DoqueTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6B97ED562D2B0C4300AED7BE /* DoqueUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DoqueUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		6B97EDBF2D2B711B00AED7BE /* Exceptions for "DoqqMacApp" folder in "DoqqMacApp" target */ = {
+		6B97EDBF2D2B711B00AED7BE /* Exceptions for "Doque" folder in "Doque" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 6B97ED3A2D2B0C4100AED7BE /* DoqqMacApp */;
+			target = 6B97ED3A2D2B0C4100AED7BE /* Doque */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		6B97ED3D2D2B0C4100AED7BE /* DoqqMacApp */ = {
+		6B97ED3D2D2B0C4100AED7BE /* Doque */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				6B97EDBF2D2B711B00AED7BE /* Exceptions for "DoqqMacApp" folder in "DoqqMacApp" target */,
+				6B97EDBF2D2B711B00AED7BE /* Exceptions for "Doque" folder in "Doque" target */,
 			);
-			path = DoqqMacApp;
+			path = Doque;
 			sourceTree = "<group>";
 		};
-		6B97ED4F2D2B0C4300AED7BE /* DoqqMacAppTests */ = {
+		6B97ED4F2D2B0C4300AED7BE /* DoqueTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = DoqqMacAppTests;
+			path = DoqueTests;
 			sourceTree = "<group>";
 		};
-		6B97ED592D2B0C4300AED7BE /* DoqqMacAppUITests */ = {
+		6B97ED592D2B0C4300AED7BE /* DoqueUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = DoqqMacAppUITests;
+			path = DoqueUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -102,9 +102,9 @@
 		6B97ED322D2B0C4100AED7BE = {
 			isa = PBXGroup;
 			children = (
-				6B97ED3D2D2B0C4100AED7BE /* DoqqMacApp */,
-				6B97ED4F2D2B0C4300AED7BE /* DoqqMacAppTests */,
-				6B97ED592D2B0C4300AED7BE /* DoqqMacAppUITests */,
+				6B97ED3D2D2B0C4100AED7BE /* Doque */,
+				6B97ED4F2D2B0C4300AED7BE /* DoqueTests */,
+				6B97ED592D2B0C4300AED7BE /* DoqueUITests */,
 				6B163C7C2D47F7110007663C /* Frameworks */,
 				6B97ED3C2D2B0C4100AED7BE /* Products */,
 			);
@@ -113,9 +113,9 @@
 		6B97ED3C2D2B0C4100AED7BE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6B97ED3B2D2B0C4100AED7BE /* DoqqMacApp.app */,
-				6B97ED4C2D2B0C4300AED7BE /* DoqqMacAppTests.xctest */,
-				6B97ED562D2B0C4300AED7BE /* DoqqMacAppUITests.xctest */,
+				6B97ED3B2D2B0C4100AED7BE /* Doque.app */,
+				6B97ED4C2D2B0C4300AED7BE /* DoqueTests.xctest */,
+				6B97ED562D2B0C4300AED7BE /* DoqueUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -123,9 +123,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		6B97ED3A2D2B0C4100AED7BE /* DoqqMacApp */ = {
+		6B97ED3A2D2B0C4100AED7BE /* Doque */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6B97ED602D2B0C4300AED7BE /* Build configuration list for PBXNativeTarget "DoqqMacApp" */;
+			buildConfigurationList = 6B97ED602D2B0C4300AED7BE /* Build configuration list for PBXNativeTarget "Doque" */;
 			buildPhases = (
 				6B97ED372D2B0C4100AED7BE /* Sources */,
 				6B97ED382D2B0C4100AED7BE /* Frameworks */,
@@ -136,20 +136,20 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				6B97ED3D2D2B0C4100AED7BE /* DoqqMacApp */,
+				6B97ED3D2D2B0C4100AED7BE /* Doque */,
 			);
-			name = DoqqMacApp;
+			name = Doque;
 			packageProductDependencies = (
 				6B163C7D2D47F7110007663C /* MarkdownUI */,
 				6B163C802D47FCF00007663C /* Splash */,
 			);
 			productName = DoqqMacApp;
-			productReference = 6B97ED3B2D2B0C4100AED7BE /* DoqqMacApp.app */;
+			productReference = 6B97ED3B2D2B0C4100AED7BE /* Doque.app */;
 			productType = "com.apple.product-type.application";
 		};
-		6B97ED4B2D2B0C4300AED7BE /* DoqqMacAppTests */ = {
+		6B97ED4B2D2B0C4300AED7BE /* DoqueTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6B97ED632D2B0C4300AED7BE /* Build configuration list for PBXNativeTarget "DoqqMacAppTests" */;
+			buildConfigurationList = 6B97ED632D2B0C4300AED7BE /* Build configuration list for PBXNativeTarget "DoqueTests" */;
 			buildPhases = (
 				6B97ED482D2B0C4300AED7BE /* Sources */,
 				6B97ED492D2B0C4300AED7BE /* Frameworks */,
@@ -161,18 +161,18 @@
 				6B97ED4E2D2B0C4300AED7BE /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				6B97ED4F2D2B0C4300AED7BE /* DoqqMacAppTests */,
+				6B97ED4F2D2B0C4300AED7BE /* DoqueTests */,
 			);
-			name = DoqqMacAppTests;
+			name = DoqueTests;
 			packageProductDependencies = (
 			);
 			productName = DoqqMacAppTests;
-			productReference = 6B97ED4C2D2B0C4300AED7BE /* DoqqMacAppTests.xctest */;
+			productReference = 6B97ED4C2D2B0C4300AED7BE /* DoqueTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		6B97ED552D2B0C4300AED7BE /* DoqqMacAppUITests */ = {
+		6B97ED552D2B0C4300AED7BE /* DoqueUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6B97ED662D2B0C4300AED7BE /* Build configuration list for PBXNativeTarget "DoqqMacAppUITests" */;
+			buildConfigurationList = 6B97ED662D2B0C4300AED7BE /* Build configuration list for PBXNativeTarget "DoqueUITests" */;
 			buildPhases = (
 				6B97ED522D2B0C4300AED7BE /* Sources */,
 				6B97ED532D2B0C4300AED7BE /* Frameworks */,
@@ -184,13 +184,13 @@
 				6B97ED582D2B0C4300AED7BE /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				6B97ED592D2B0C4300AED7BE /* DoqqMacAppUITests */,
+				6B97ED592D2B0C4300AED7BE /* DoqueUITests */,
 			);
-			name = DoqqMacAppUITests;
+			name = DoqueUITests;
 			packageProductDependencies = (
 			);
 			productName = DoqqMacAppUITests;
-			productReference = 6B97ED562D2B0C4300AED7BE /* DoqqMacAppUITests.xctest */;
+			productReference = 6B97ED562D2B0C4300AED7BE /* DoqueUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -216,7 +216,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 6B97ED362D2B0C4100AED7BE /* Build configuration list for PBXProject "DoqqMacApp" */;
+			buildConfigurationList = 6B97ED362D2B0C4100AED7BE /* Build configuration list for PBXProject "Doque" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -234,9 +234,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				6B97ED3A2D2B0C4100AED7BE /* DoqqMacApp */,
-				6B97ED4B2D2B0C4300AED7BE /* DoqqMacAppTests */,
-				6B97ED552D2B0C4300AED7BE /* DoqqMacAppUITests */,
+				6B97ED3A2D2B0C4100AED7BE /* Doque */,
+				6B97ED4B2D2B0C4300AED7BE /* DoqueTests */,
+				6B97ED552D2B0C4300AED7BE /* DoqueUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -292,12 +292,12 @@
 /* Begin PBXTargetDependency section */
 		6B97ED4E2D2B0C4300AED7BE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 6B97ED3A2D2B0C4100AED7BE /* DoqqMacApp */;
+			target = 6B97ED3A2D2B0C4100AED7BE /* Doque */;
 			targetProxy = 6B97ED4D2D2B0C4300AED7BE /* PBXContainerItemProxy */;
 		};
 		6B97ED582D2B0C4300AED7BE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 6B97ED3A2D2B0C4100AED7BE /* DoqqMacApp */;
+			target = 6B97ED3A2D2B0C4100AED7BE /* Doque */;
 			targetProxy = 6B97ED572D2B0C4300AED7BE /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -426,15 +426,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = DoqqMacApp/DoqqMacApp.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Doque/Doque.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"DoqqMacApp/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Doque/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = DoqqMacApp/Info.plist;
+				INFOPLIST_FILE = Doque/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Doque;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -454,7 +455,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = DoqqMacApp/DoqqMacApp.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Doque/Doque.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -462,7 +463,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"DoqqMacApp/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = DoqqMacApp/Info.plist;
+				INFOPLIST_FILE = Doque/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Doque;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -490,7 +492,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DoqqMacApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DoqqMacApp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Doque.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Doque";
 			};
 			name = Debug;
 		};
@@ -507,7 +509,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DoqqMacApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DoqqMacApp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Doque.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Doque";
 			};
 			name = Release;
 		};
@@ -544,7 +546,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		6B97ED362D2B0C4100AED7BE /* Build configuration list for PBXProject "DoqqMacApp" */ = {
+		6B97ED362D2B0C4100AED7BE /* Build configuration list for PBXProject "Doque" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6B97ED5E2D2B0C4300AED7BE /* Debug */,
@@ -553,7 +555,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6B97ED602D2B0C4300AED7BE /* Build configuration list for PBXNativeTarget "DoqqMacApp" */ = {
+		6B97ED602D2B0C4300AED7BE /* Build configuration list for PBXNativeTarget "Doque" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6B97ED612D2B0C4300AED7BE /* Debug */,
@@ -562,7 +564,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6B97ED632D2B0C4300AED7BE /* Build configuration list for PBXNativeTarget "DoqqMacAppTests" */ = {
+		6B97ED632D2B0C4300AED7BE /* Build configuration list for PBXNativeTarget "DoqueTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6B97ED642D2B0C4300AED7BE /* Debug */,
@@ -571,7 +573,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6B97ED662D2B0C4300AED7BE /* Build configuration list for PBXNativeTarget "DoqqMacAppUITests" */ = {
+		6B97ED662D2B0C4300AED7BE /* Build configuration list for PBXNativeTarget "DoqueUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6B97ED672D2B0C4300AED7BE /* Debug */,
