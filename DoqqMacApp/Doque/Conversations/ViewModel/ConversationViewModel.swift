@@ -42,12 +42,11 @@ class ConversationViewModel {
     /// Current session that we can see on the view
     var selectedSessionMessages: [MessageStateModel] = []
     var installedModels: [StateModel] = []
-    var selectedLLMIndex: Int = 0
     var selectedModel: String {
-        guard !installedModels.isEmpty else {
-            return "Get Models"
+        guard !installedModels.isEmpty, !sessions.isEmpty else {
+            return "New Session"
         }
-        return "Session: \(installedModels[selectedLLMIndex].name)"
+        return "\(sessions[selectedSession].modelName)"
     }
     
     /// sets the model
@@ -101,7 +100,7 @@ class ConversationViewModel {
             state = .askingLLM
             let message = MessageStateModel(role: "user", content: message, isQuery: true)
             selectedSessionMessages.append(message)
-            let response = try await conversationManager.askDoqq(session: selectedSession, name: name, message: message.toPayload())
+            let response = try await conversationManager.askDoqq(session: selectedSession, modelName: selectedModel, name: name, message: message.toPayload())
             selectedSessionMessages.append(.init(role: response.message.role, content: response.message.content, isQuery: false))
             //            try await conversationManager.saveBatch(id: selectedSession, name: name, messages: [message.toPayload(), response.message])
             state = .successAskingLLM
@@ -122,15 +121,9 @@ class ConversationViewModel {
         }
     }
     
-    func processFiles(cocoapodsRoot: String) async {
+    func processFiles(model: StateModel, cocoapodsRoot: String) async {
         state = .askingLLM
-    
-//        guard let installedModels, !installedModels.models.isEmpty else {
-//            selectedSessionMessages.append(.init(role: "user", content: "No LLM Found", isQuery: false))
-//            selectedSessionMessages.append(.init(role: "user", content: "You can install one by running `ollama run codellama:13b`", isQuery: false))
-//            return
-//        }
-//        
+      
         let selectedSessionConvesation = try? conversationManager.findSession(for: selectedSession)
         if let selectedSessionConvesation, !selectedSessionConvesation.chatHistory.isEmpty {
             selectedSession = sessions.count
@@ -142,7 +135,7 @@ class ConversationViewModel {
         do {
             // Send prime instructions to Llama3
             
-            let _ = try await conversationManager.askDoqq(session: selectedSession, name: sessionName, message: Message(role: "user", content: primeMessage, isQuery: true, isEnd: true))
+            let _ = try await conversationManager.askDoqq(session: selectedSession, modelName: model.name, name: sessionName, message: Message(role: "user", content: primeMessage, isQuery: true, isEnd: true))
             selectedSessionMessages.append(.init(role: "user", content: "Ok. Success Prime LLama agent", isQuery: false))
             
             let fileManager = FileManager.default
@@ -173,7 +166,7 @@ class ConversationViewModel {
                         isEnd: true
                     )
                     
-                    let response = try await conversationManager.askDoqq(session: selectedSession, name: sessionName, message: message)
+                    let response = try await conversationManager.askDoqq(session: selectedSession, modelName: model.name, name: sessionName, message: message)
                     print("### PRIME")
                     dump(response)
                 } catch {
@@ -186,7 +179,7 @@ class ConversationViewModel {
                 selectedSessionMessages.append(.init(role: "user", content: "Primed \(chunkIndex) files", isQuery: false))
                 print("### Success OPRime")
                 let response = try await conversationManager.askDoqq(
-                    session: selectedSession, name: sessionName,
+                    session: selectedSession, modelName: model.name, name: sessionName,
                     message: .init(role: "user",content: endSignal, isQuery: true,isEnd: true)
                 )
                 selectedSessionMessages.append(.init(role: "user", content: endSignal, isQuery: true))
@@ -196,7 +189,6 @@ class ConversationViewModel {
             } else {
                 selectedSessionMessages.append(.init(role: "user", content: "Some code failed to be primed", isQuery: false))
                 print("### Fail OPRime")
-                //                try await conversationManager.saveBatch(id: selectedSession, name: sessionName, messages: sessions[selectedSession].chatHistory) // Might be a source of bugs should probably have a two askDoqq funcs with isEnd + batch save and one that save after every input
                 state = .initLoadFail
             }
         } catch {

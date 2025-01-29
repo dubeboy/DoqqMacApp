@@ -29,7 +29,7 @@ class Message: Codable, Identifiable {
         case role, content
     }
     
-    init(id: Int, role: String, content: String, isQuery: Bool, isEnd: Bool = false) {
+    init(id: Int = 0, role: String, content: String, isQuery: Bool, isEnd: Bool = false) {
         self.role = role
         self.content = content
         self.id = id

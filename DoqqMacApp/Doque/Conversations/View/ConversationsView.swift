@@ -39,7 +39,7 @@ struct ConversationsView: View {
         if openPanel.runModal() == .OK, let selectedURL = openPanel.url {
             let selectedFolderPath = selectedURL.path
             Task {
-                await viewModel.processFiles(cocoapodsRoot: selectedFolderPath)
+                await viewModel.processFiles(model: model, cocoapodsRoot: selectedFolderPath)
             }
         }
     }

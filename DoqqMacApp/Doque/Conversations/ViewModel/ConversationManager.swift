@@ -15,9 +15,9 @@ final class ConversationManager {
     @LateInitialized
     private var modelContext: ModelContext
     
-    func askDoqq(session id: Int, name: String, message: Message) async throws -> OllamaResponse {
+    func askDoqq(session id: Int, modelName: String, name: String, message: Message) async throws -> OllamaResponse {
         if sessions.count <= id { // even if it fails to send eg network issue, that is fine as it will not be persisted to DB
-            let session = ConversationSessionDTO(id: id, name: name, chatHistory: [message])
+            let session = ConversationSessionDTO(id: id, name: name, modelName: modelName, chatHistory: [message])
             sessions.append(session)
         } else {
             sessions[id].chatHistory.append(message)
@@ -25,13 +25,13 @@ final class ConversationManager {
         
         let response = try await conversationService.sendToLlama3(messages: sessions[id].chatHistory) // There is a problem
         sessions[id].chatHistory.append(response.message)
-        try appendSessionToLocalDB(id: id, name: name, messages: [message, response.message])
+        try appendSessionToLocalDB(id: id, modelName: modelName, name: name, messages: [message, response.message])
         return response
     }
     
     /// adds this session to local DB
 //    @MainActor
-    func appendSessionToLocalDB(id: Int, name: String, messages: [Message]) throws {
+    func appendSessionToLocalDB(id: Int, modelName: String, name: String, messages: [Message]) throws {
        try modelContext.transaction {
            let predicate = #Predicate<ConversationSessionModel> { session in
                session.id == id
@@ -42,7 +42,7 @@ final class ConversationManager {
                ConversationSessionModel.addBidirection(session: session, messages: messages)
                session.chatHistory.append(contentsOf: messages)
            } else {
-               let session = ConversationSessionModel(id: id, name: name, chatHistory: messages)
+               let session = ConversationSessionModel(id: id, modelName: modelName, name: name, chatHistory: messages)
                ConversationSessionModel.addBidirection(session: session, messages: messages)
                modelContext.insert(session)
            }
@@ -76,7 +76,7 @@ final class ConversationManager {
         let sessions = try modelContext.fetch(fetchDescriptor)
         if self.sessions.isEmpty {
             self.sessions = sessions.map({ model in
-                    .init(id: model.id, name: model.name, chatHistory: model.chatHistory)
+                    .init(id: model.id, name: model.name, modelName: model.modelName, chatHistory: model.chatHistory)
             })
         }
     }
