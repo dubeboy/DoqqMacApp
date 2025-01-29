@@ -9,7 +9,7 @@ import SwiftData
 import Foundation
 
 /// Conversation manager and data amanger for the viewmodel
-class ConversationManager {
+final class ConversationManager {
     private(set) var sessions: [ConversationSessionDTO] = []
     private let conversationService = ConversationService()
     @LateInitialized
@@ -25,12 +25,12 @@ class ConversationManager {
         
         let response = try await conversationService.sendToLlama3(messages: sessions[id].chatHistory) // There is a problem
         sessions[id].chatHistory.append(response.message)
-        try await appendSessionToLocalDB(id: id, name: name, messages: [message, response.message])
+        try appendSessionToLocalDB(id: id, name: name, messages: [message, response.message])
         return response
     }
     
     /// adds this session to local DB
-    @MainActor
+//    @MainActor
     func appendSessionToLocalDB(id: Int, name: String, messages: [Message]) throws {
        try modelContext.transaction {
            let predicate = #Predicate<ConversationSessionModel> { session in

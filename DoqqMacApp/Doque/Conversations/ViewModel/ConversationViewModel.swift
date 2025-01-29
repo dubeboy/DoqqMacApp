@@ -13,7 +13,7 @@ import SwiftData
 class ConversationViewModel {
     
     enum State {
-        case loading, initLoaded, initLoadFail, askingLLM, errorAskingLLM, successAskingLLM
+        case loading, ollamaNotRunning, initLoaded, initLoadFail, askingLLM, errorAskingLLM, successAskingLLM
     }
     
     @ObservationIgnored
@@ -22,7 +22,8 @@ class ConversationViewModel {
     private let conversationManager = ConversationManager()
     private let primeMessage = primeString
     private let endSignal = "END_CHUNK_SEND"
-
+    private let conversationService = ConversationService() // Does not have to be a singleton but can be also
+    
     var state: State = .loading
     var selectedSession: Int = 0 {
         didSet {
@@ -40,10 +41,41 @@ class ConversationViewModel {
     }
     /// Current session that we can see on the view
     var selectedSessionMessages: [MessageStateModel] = []
+    var installedModels: [StateModel] = []
+    var selectedLLMIndex: Int = 0
+    var selectedModel: String {
+        guard !installedModels.isEmpty else {
+            return "Get Models"
+        }
+        return "Session: \(installedModels[selectedLLMIndex].name)"
+    }
     
     /// sets the model
     /// Call this on viewdidApear
-    func loadSessions(with context: ModelContext) {
+    @MainActor
+    func loadSessions(with context: ModelContext) async {
+        state = .loading
+        selectedSessionMessages = [(.init(role: "user", content: "Initializing", isQuery: false))]
+        guard let model = await getInstalledModels() else {
+            selectedSessionMessages.append(.init(role: "user", content: "Ollama not Installed. Please installed Ollama", isQuery: false))
+            selectedSessionMessages.append(.init(role: "user", content: "Please download Ollama from `https://ollama.com`", isQuery: false))
+            selectedSessionMessages.append(.init(role: "user", content: "Its quite straight forward. After this is done Please click `Try again`", isQuery: false))
+            state = .ollamaNotRunning
+            return
+        }
+        
+        if model.models.isEmpty {
+           
+            selectedSessionMessages.append(.init(role: "user", content: "Ollama Installed but No LLM Found", isQuery: false))
+            selectedSessionMessages.append(.init(role: "user", content: "You can install one by running `ollama run codellama:13b`", isQuery: false))
+            selectedSessionMessages.append(.init(role: "user", content: "Feel free to download one here: https://ollama.com/search that is suites your needs", isQuery: false))
+            selectedSessionMessages.append(.init(role: "user", content: "Once Done Please click `Try again`", isQuery: false))
+            state = .ollamaNotRunning
+            return
+        }
+        
+        installedModels = model.models
+        
         state = .askingLLM
         self.context = context
         do {
@@ -71,7 +103,7 @@ class ConversationViewModel {
             selectedSessionMessages.append(message)
             let response = try await conversationManager.askDoqq(session: selectedSession, name: name, message: message.toPayload())
             selectedSessionMessages.append(.init(role: response.message.role, content: response.message.content, isQuery: false))
-//            try await conversationManager.saveBatch(id: selectedSession, name: name, messages: [message.toPayload(), response.message])
+            //            try await conversationManager.saveBatch(id: selectedSession, name: name, messages: [message.toPayload(), response.message])
             state = .successAskingLLM
         } catch {
             state = .errorAskingLLM
@@ -92,6 +124,13 @@ class ConversationViewModel {
     
     func processFiles(cocoapodsRoot: String) async {
         state = .askingLLM
+    
+//        guard let installedModels, !installedModels.models.isEmpty else {
+//            selectedSessionMessages.append(.init(role: "user", content: "No LLM Found", isQuery: false))
+//            selectedSessionMessages.append(.init(role: "user", content: "You can install one by running `ollama run codellama:13b`", isQuery: false))
+//            return
+//        }
+//        
         let selectedSessionConvesation = try? conversationManager.findSession(for: selectedSession)
         if let selectedSessionConvesation, !selectedSessionConvesation.chatHistory.isEmpty {
             selectedSession = sessions.count
@@ -109,7 +148,7 @@ class ConversationViewModel {
             let fileManager = FileManager.default
             let enumerator = fileManager.enumerator(atPath: cocoapodsRoot)
             selectedSessionMessages.append(.init(role: "user", content: "Priming for dir \(cocoapodsRoot)", isQuery: false))
-                    
+            
             while let path = enumerator?.nextObject() as? String {
                 let fullPath = "\(cocoapodsRoot)/\(path)"
                 guard fileManager.fileExists(atPath: fullPath), !fileManager.isDirectory(atPath: fullPath) else { continue }
@@ -152,12 +191,12 @@ class ConversationViewModel {
                 )
                 selectedSessionMessages.append(.init(role: "user", content: endSignal, isQuery: true))
                 selectedSessionMessages.append(.init(role: "user", content: response.message.content, isQuery: false))
-//                try await conversationManager.saveBatch(id: selectedSession, name: sessionName, messages: sessions[selectedSession].chatHistory)
+                //                try await conversationManager.saveBatch(id: selectedSession, name: sessionName, messages: sessions[selectedSession].chatHistory)
                 state = .initLoaded
             } else {
                 selectedSessionMessages.append(.init(role: "user", content: "Some code failed to be primed", isQuery: false))
                 print("### Fail OPRime")
-//                try await conversationManager.saveBatch(id: selectedSession, name: sessionName, messages: sessions[selectedSession].chatHistory) // Might be a source of bugs should probably have a two askDoqq funcs with isEnd + batch save and one that save after every input
+                //                try await conversationManager.saveBatch(id: selectedSession, name: sessionName, messages: sessions[selectedSession].chatHistory) // Might be a source of bugs should probably have a two askDoqq funcs with isEnd + batch save and one that save after every input
                 state = .initLoadFail
             }
         } catch {
@@ -166,6 +205,15 @@ class ConversationViewModel {
             
         }
         print("\n\nFinished processing files. sent \(chunkIndex)")
+    }
+    
+    /// Returns `true` if can get models this means that Ollama is Running else false
+    private func getInstalledModels() async -> OllamaModelStateModel? {
+        let models = try? await conversationService.ollamaListLocalModels()
+        guard let models else {
+            return nil
+        }
+        return OllamaModelStateModel(model: models)
     }
     
 }
@@ -181,7 +229,7 @@ extension FileManager {
 @propertyWrapper
 struct LateInitialized<Value> {
     private var storage: Value?
-
+    
     var wrappedValue: Value {
         get {
             guard let storage = storage else {
@@ -193,7 +241,7 @@ struct LateInitialized<Value> {
             storage = newValue
         }
     }
-
+    
     init() {
         self.storage = nil
     }
@@ -218,7 +266,7 @@ let primeString =  """
        - You will search through the provided library code and respond with any relevant matches.
 
     3. **Response Format**:  
-       - If relevant code is found, reference the appropriate chunk index in **Markdown format** (e.g., `[Chunk 1]`).  
+       - If relevant code is found, reference the appropriate chunk index in **Github Markdown format** (e.g., `[Chunk 1]`).  
        - If no relevant code is found, simply state:  
          *"No matching code found for the query."*  
 

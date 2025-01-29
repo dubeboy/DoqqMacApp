@@ -16,7 +16,7 @@ struct OllamaPayload: Codable {
 
 @Model
 class Message: Codable, Identifiable {
-    @Attribute(.unique) var id: String
+    @Attribute(.unique) var id: Int
     var role: String
     var content: String
     var isQuery: Bool
@@ -29,10 +29,10 @@ class Message: Codable, Identifiable {
         case role, content
     }
     
-    init(role: String, content: String, isQuery: Bool, isEnd: Bool = false) {
+    init(id: Int, role: String, content: String, isQuery: Bool, isEnd: Bool = false) {
         self.role = role
         self.content = content
-        self.id = UUID().uuidString
+        self.id = id
         self.isQuery = isQuery
         self.isEnd = isEnd
     }
@@ -41,7 +41,7 @@ class Message: Codable, Identifiable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.role = try container.decode(String.self, forKey: .role)
         self.content = try container.decode(String.self, forKey: .content)
-        self.id = UUID().uuidString
+        self.id = 0
         self.isEnd = false
         self.isQuery = false
     }

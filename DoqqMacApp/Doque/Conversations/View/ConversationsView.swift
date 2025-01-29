@@ -11,7 +11,7 @@ import SwiftData
 
 struct ConversationsView: View {
     @Environment(\.modelContext) private var modelContext
-    @State var viewModel: ConversationViewModel = ConversationViewModel() // it being being nil is a problem we could make modelContext nullable in the viewmodel instead
+    @State var viewModel: ConversationViewModel = ConversationViewModel()
     
     var body: some View {
         NavigationView {
@@ -19,28 +19,18 @@ struct ConversationsView: View {
             chatView
         }
         .toolbar {
-            ToolbarItem(placement: .automatic) {
-                Button(action: selectFolder) {
-                    Image(systemName: "plus")
-                        .help("Select a folder")
-                }
-                .buttonStyle(BorderlessButtonStyle())
-                .disabled(viewModel.disableInteraction)
+            ToolbarItem(placement: .primaryAction) {
+                newSessionToolBarItem
             }
-            ToolbarItem(placement: .navigation) { // Use `.primaryAction` for right-aligned items
-                Button(action: {}) {
-                                Image(systemName: "gearshape") // Use any SF Symbol or custom icon
-                                    .help("Settings or additional options")
-                            }
-                            .buttonStyle(BorderlessButtonStyle())
-                        }
         }
         .onAppear {
-            viewModel.loadSessions(with: modelContext)
+            Task {
+                await viewModel.loadSessions(with: modelContext)
+            }
         }
     }
     
-    private func selectFolder() {
+    private func selectFolder(model: StateModel) {
         let openPanel = NSOpenPanel()
         openPanel.canChooseFiles = false
         openPanel.canChooseDirectories = true
@@ -48,7 +38,6 @@ struct ConversationsView: View {
         
         if openPanel.runModal() == .OK, let selectedURL = openPanel.url {
             let selectedFolderPath = selectedURL.path
-            print("Selected folder: \(selectedFolderPath)")
             Task {
                 await viewModel.processFiles(cocoapodsRoot: selectedFolderPath)
             }
@@ -99,6 +88,40 @@ struct ConversationsView: View {
             Text(session.name)
         }
         .disabled(viewModel.disableInteraction)
+    }
+    
+    var newSessionToolBarItem: some View {
+        Group {
+            if case viewModel.state = .ollamaNotRunning {
+                Button {
+                    Task {
+                        await viewModel.loadSessions(with: modelContext)
+                    }
+                } label: {
+                    HStack {
+                        Text("Try Again")
+                        Image(systemName: "arrow.trianglehead.counterclockwise") // Icon for the sidebar toggle
+                                                .help("Toggle sidebar")
+                    }
+                   
+                }
+                .buttonStyle(BorderlessButtonStyle())
+            } else {
+                Menu {
+                    ForEach(viewModel.installedModels, id: \.id) { model in
+                        Button("New \(model.name) Session", action: {
+                            selectFolder(model: model)
+                        })
+                    }
+                } label: {
+                    HStack {
+                        Text(viewModel.selectedModel)
+                    }
+                }
+                .menuStyle(BorderlessButtonMenuStyle())
+                .disabled(viewModel.disableInteraction)
+            }
+        }
     }
 }
 

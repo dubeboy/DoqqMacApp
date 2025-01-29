@@ -68,5 +68,141 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6705809B-5636-492F-9C1F-F51E3D44120C"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Doque/Conversations/ViewModel/ConversationViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "213"
+            endingLineNumber = "213"
+            landmarkName = "getInstalledModels()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "6705809B-5636-492F-9C1F-F51E3D44120C - 96eec6f13b9d3ae0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for Doque.ConversationViewModel.getInstalledModels() async -&gt; Swift.Optional&lt;Doque.OllamaModelStateModel&gt;"
+                  moduleName = "Doque.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/divinedube/Developer/Self/Doqq/DoqqMacApp/Doque/Conversations/ViewModel/ConversationViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "213"
+                  endingLineNumber = "213">
+               </Location>
+               <Location
+                  uuid = "6705809B-5636-492F-9C1F-F51E3D44120C - 7ac0752d2070b8e7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for Doque.ConversationViewModel.getInstalledModels() async -&gt; Swift.Optional&lt;Doque.OllamaModelStateModel&gt;"
+                  moduleName = "Doque.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/divinedube/Developer/Self/Doqq/DoqqMacApp/Doque/Conversations/ViewModel/ConversationViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "213"
+                  endingLineNumber = "213">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "835AAA0E-B140-4D21-8F32-74B993DDD3AB"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Doque/Conversations/Service/ConversationService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "46"
+            endingLineNumber = "46"
+            landmarkName = "ollamaListLocalModels()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "835AAA0E-B140-4D21-8F32-74B993DDD3AB - d289ddebb13ce925"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for Doque.ConversationService.ollamaListLocalModels() async throws -&gt; Doque.OllamaModelResponse"
+                  moduleName = "Doque.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/divinedube/Developer/Self/Doqq/DoqqMacApp/Doque/Conversations/Service/ConversationService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "46"
+                  endingLineNumber = "46">
+               </Location>
+               <Location
+                  uuid = "835AAA0E-B140-4D21-8F32-74B993DDD3AB - 3dd5b3e68efb477b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for Doque.ConversationService.ollamaListLocalModels() async throws -&gt; Doque.OllamaModelResponse"
+                  moduleName = "Doque.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/divinedube/Developer/Self/Doqq/DoqqMacApp/Doque/Conversations/Service/ConversationService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "46"
+                  endingLineNumber = "46">
+               </Location>
+               <Location
+                  uuid = "835AAA0E-B140-4D21-8F32-74B993DDD3AB - 3818bf299d984513"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for Doque.ConversationService.ollamaListLocalModels() async throws -&gt; Doque.OllamaModelResponse"
+                  moduleName = "Doque.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/divinedube/Developer/Self/Doqq/DoqqMacApp/Doque/Conversations/Service/ConversationService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "46"
+                  endingLineNumber = "46">
+               </Location>
+               <Location
+                  uuid = "835AAA0E-B140-4D21-8F32-74B993DDD3AB - f36701c6f629f71a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for Doque.ConversationService.ollamaListLocalModels() async throws -&gt; Doque.OllamaModelResponse"
+                  moduleName = "Doque.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/divinedube/Developer/Self/Doqq/DoqqMacApp/Doque/Conversations/Service/ConversationService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "46"
+                  endingLineNumber = "46">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "1336DB8F-F500-4A1C-AF98-F7FA264A63F3"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Doque/NetworkClient/DoqqHTTPServiceClient.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "24"
+            endingLineNumber = "24"
+            landmarkName = "makeRequest(_:for:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>
